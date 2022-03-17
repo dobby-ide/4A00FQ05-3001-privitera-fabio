@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+var readlineSync = require('readline-sync');
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
@@ -12,7 +12,10 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-connection.query('select * from locations', (err, coords) => {
+// Wait for user's response.
+var id = readlineSync.question('May I have id? ');
+
+connection.query(`select * from locations WHERE id=${id}`, (err, coords) => {
   if (err) {
     throw err;
   }
