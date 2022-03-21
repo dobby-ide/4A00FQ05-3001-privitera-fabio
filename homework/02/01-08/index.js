@@ -1,14 +1,17 @@
 const connection = require('./database/crudrepository.js');
 const location = [20, 30];
-connection.connect((result) => console.log(result));
-connection.findAll((result) => console.log(result));
-connection.save(location, (result) => console.log(result));
-connection.deleteById(3, (result) =>
-  console.log('affected Rows: ' + result.affectedRows)
-);
-connection.findById(7, (result) => console.log(result));
-connection.close((err) => console.log(err));
 
+const main = () => {
+  connection.connect((result) => console.log(result));
+  connection.findAll((result) => console.log(result));
+  connection.save(location, (result) => console.log(result));
+  connection.deleteById(3, (result) =>
+    console.log('affected Rows: ' + result.affectedRows)
+  );
+  connection.findById(7, (result) => console.log(result));
+  connection.close((err) => console.log(err));
+};
+main();
 // var readlineSync = require('readline-sync');
 // const mysql = require('mysql');
 
