@@ -1,5 +1,28 @@
 const connection = require('./database/crudrepositoryAsync.js');
-const location = [20, 30];
+const idSchema = {
+  type: 'array',
+  items: [
+    {
+      type: 'number',
+      minimum: -90,
+      maximum: 90,
+    },
+    {
+      type: 'number',
+      minimum: -180,
+      maximum: 180,
+    },
+  ],
+};
+const location = [320, 30];
+const Validator = require('jsonschema').Validator;
+const validator = new Validator();
+
+const validation = validator.validate(location, idSchema);
+if (validation.errors.length > 0) {
+  console.log(validation.errors);
+}
+
 
 const main = async () => {
   let connecting = await connection.connect();
