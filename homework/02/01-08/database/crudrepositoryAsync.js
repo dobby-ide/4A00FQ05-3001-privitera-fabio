@@ -7,10 +7,32 @@ const connection = mysql.createConnection({
   database: process.env.DB_DB,
   multipleStatements: true,
 });
+const idSchema = {
+  type: 'array',
+  items: [
+    {
+      type: 'number',
+      minimum: -90,
+      maximum: 90,
+    },
+    {
+      type: 'number',
+      minimum: -180,
+      maximum: 180,
+    },
+  ],
+};
+
+const Validator = require('jsonschema').Validator;
+const validator = new Validator();
+
 let connectionFunctions = {
   connect: () => {
     function myProm(resolve, reject) {
-      connection.connect((err, result) => resolve(result));
+      connection.connect((err, result) => {
+        resolve(result);
+        reject(err);
+      });
     }
 
     return new Promise(myProm);
@@ -26,13 +48,21 @@ let connectionFunctions = {
     return new Promise(myProm);
   },
   save: (location) => {
+    const validation = validator.validate(location, idSchema);
+
     function myProm(resolve, reject) {
       connection.query(
         `insert into locations(latitude,longitude) values(
       ${location[0]}, ${location[1]}
     );`,
         (err, saving) => {
-          resolve(saving);
+          if (validation.errors.length == 0) {
+            if (saving) {
+              resolve(saving);
+            }
+          } else {
+            reject(err);
+          }
         }
       );
     }
@@ -52,7 +82,11 @@ let connectionFunctions = {
       connection.query(
         `delete from locations where id = ${id};`,
         (err, result) => {
-          resolve(result);
+          if (result.affectedRows == 1) {
+            resolve(result);
+          } else {
+            reject(err);
+          }
         }
       );
     }
@@ -63,7 +97,11 @@ let connectionFunctions = {
       connection.query(
         `select * from locations where id = ${id};`,
         (err, result) => {
-          resolve(result);
+          if (result) {
+            resolve(result);
+          } else {
+            reject(err);
+          }
         }
       );
     }
