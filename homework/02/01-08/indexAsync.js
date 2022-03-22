@@ -1,46 +1,89 @@
 const connection = require('./database/crudrepositoryAsync.js');
-const idSchema = {
-  type: 'array',
-  items: [
-    {
-      type: 'number',
-      minimum: -90,
-      maximum: 90,
-    },
-    {
-      type: 'number',
-      minimum: -180,
-      maximum: 180,
-    },
-  ],
+const location = [333, 30];
+
+const mainById = async () => {
+  //findById
+  try {
+    await connection.connect();
+    const result = await connection.findById(33);
+    console.log(result);
+  } catch (err) {
+    console.log('not a valid id');
+  } finally {
+    try {
+      console.log(await connection.close());
+    } catch (err) {
+      console.log('connection still alive');
+    }
+  }
 };
-const location = [320, 30];
-const Validator = require('jsonschema').Validator;
-const validator = new Validator();
 
-const validation = validator.validate(location, idSchema);
-if (validation.errors.length > 0) {
-  console.log(validation.errors);
-}
-
-
-const main = async () => {
-  let connecting = await connection.connect();
-  console.log(connecting);
-
-  let findAll = await connection.findAll();
-  console.log(findAll);
-  let save = await connection.save(location);
-  console.log(save);
-
-  let deleteById = await connection.deleteById(3);
-  console.log('affected rows: ' + deleteById.affectedRows);
-
-  let findById = await connection.findById(7);
-  let result = await findById;
-  console.log(result);
-
-  let closing = await connection.close((err) => console.log(err));
-  //console.log(closing);
+//findAll
+const mainAll = async () => {
+  try {
+    await connection.connect();
+    const result = await connection.findAll();
+    console.log(result);
+  } catch (err) {
+    console.log('not a valid id');
+  } finally {
+    try {
+      console.log(await connection.close());
+    } catch (err) {
+      console.log('connection still alive');
+    }
+  }
 };
-main();
+//save
+const mainSave = async () => {
+  try {
+    await connection.connect();
+    const result = await connection.save(location);
+    console.log(result);
+  } catch (err) {
+    console.log('not been able to save it');
+  } finally {
+    try {
+      console.log(await connection.close());
+    } catch (err) {
+      console.log('connection still alive');
+    }
+  }
+};
+const mainDelete = async () => {
+  try {
+    await connection.connect();
+    const result = await connection.deleteById(22);
+    console.log(result);
+  } catch (err) {
+    console.log('not been able to delete it');
+  } finally {
+    try {
+      console.log(await connection.close());
+    } catch (err) {
+      console.log('connection still alive');
+    }
+  }
+};
+// let connecting = await connection.connect();
+// console.log(connecting);
+
+// let findAll = await connection.findAll();
+// console.log(findAll);
+// let save = await connection.save(location);
+// console.log(save);
+
+// let deleteById = await connection.deleteById(3);
+// console.log('affected rows: ' + deleteById.affectedRows);
+
+// let findById = await connection.findById(7);
+// let result = await findById;
+// console.log(result);
+
+// let closing = await connection.close((err) => console.log(err));
+//console.log(closing);
+
+//mainAll();
+//mainById();
+//mainSave();
+//mainDelete();
