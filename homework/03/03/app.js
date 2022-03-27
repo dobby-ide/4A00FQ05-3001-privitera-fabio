@@ -3,6 +3,19 @@
 
 const express = require('express');
 
+const Ajv = require('ajv');
+const ajv = new Ajv();
+
+const schema = {
+  type: 'object',
+  properties: {
+    latitude: { type: 'integer', minimum: -90, maximum: 90 },
+    longitude: { type: 'integer', minimum: -180, maximum: 180 },
+  },
+};
+
+const validate = ajv.compile(schema);
+
 const locations = require('./routes/locations.js');
 let dummyData = [
   { id: 1, latitude: 26, longitude: 30 },
@@ -46,9 +59,13 @@ app.delete('/locations/:id([0-9]+)', (req, res) => {
 //so when app is receiving that post http request........ from req.body
 app.post('/locations', (req, res) => {
   let location = req.body;
-  console.log(location);
-  dummyData.push(location);
-  res.status(201).send(location);
+  const valid = validate(location);
+  if (valid) {
+    dummyData.push(location);
+    res.status(201).send(location);
+  } else {
+    res.status(400).end();
+  }
 });
 app.use('/locations', locations);
 const server = app.listen(3000, () => {
