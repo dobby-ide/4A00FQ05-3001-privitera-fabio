@@ -86,8 +86,46 @@ const postLocation = (req, res) => {
     res.status(400).end();
   }
 };
-app.route("/locations").get(getAllLocations).post(postLocation);
-app.route('/locations/:id([0-9]+)').delete(deleteLocation).get(getLocation);
+ 
+const patchLocation = (req, res) => {
+  let id = req.params.id;
+  let patch = req.body;
+  //not sure if some form of validation needs being implemented here
+
+  for (var key in patch) {
+    for (var akey in dummyData[id - 1]) {
+      if (key === akey) {
+        dummyData[id - 1][key] = patch[key];
+        res
+          .status(204)
+          .json({ status: 'success', data: dummyData[id - 1][key] });
+      } else {
+        res.status(404).send('invalid data');
+      }
+    }
+  }
+};
+const putLocation = (req, res) => {
+  let id = req.params.id;
+  let patch = req.body;
+  if (id * 1 > dummyData.length || typeof patch != 'object') {
+    console.log(typeof patch);
+    res.status(404).json({
+      status: 'not success',
+      message: 'invalid ID or invalid data',
+    });
+  }
+  console.log(typeof patch);
+  dummyData[id - 1] = patch;
+  res.status(204).send('success');
+};
+app.route('/locations').get(getAllLocations).post(postLocation);
+app
+  .route('/locations/:id([0-9]+)')
+  .put(putLocation)
+  .delete(deleteLocation)
+  .get(getLocation)
+  .patch(patchLocation);
 
 //app.get('/locations/:id([0-9]+)', getLocation);
 //app.delete('/locations/:id([0-9]+)', deleteLocation);
