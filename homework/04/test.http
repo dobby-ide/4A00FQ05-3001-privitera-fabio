@@ -1,0 +1,36 @@
+
+
+//retrieves a specific location based on the id specified in the url.
+http://localhost:3000/locations/7
+###
+//filter locations by latitude and longitude
+//if latitude and longitude given are not matching with the ones in the database then it sends a 404
+http://localhost:3000/filter?latitude=29&longitude=29
+###
+
+POST http://localhost:3000/locations/
+content-type: application/json
+
+{"latitude":29,"longitude":29}
+###
+//get all locations
+http://localhost:3000/locations/
+###
+//delete a single location
+DELETE http://localhost:3000/locations/5
+###
+//sorting by latitude in descending order
+GET http://localhost:3000/sort?sort=latitude
+
+###
+
+//sorting by latitude in ascending order
+GET http://localhost:3000/sort?sort=-latitude
+
+###
+//sorting by longitude in ascending order
+GET http://localhost:3000/sort?sort=-longitude
+
+###
+//sorting by longitude in descending order
+GET http://localhost:3000/sort?sort=longitude
